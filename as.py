@@ -23,7 +23,8 @@ for line in file.readlines():
 		# Insert IP in list
 		listips.append(ipaddress.ip_address(line))
 		# Replace last octet with 0, converting in /24 network address
-		line = line[:line.rfind('.')+1] + '0'
+		line = line[:line.rfind('.')+1] + '0/24'
+		#line = line[:line.rfind('.')+1] + '0'
 		# Add /24 networks to a set
 		netset.add(line) 
 	except ValueError:
@@ -31,10 +32,13 @@ for line in file.readlines():
 		exit('\n[X] Please sanitize your file first.')
 print('\n[*] File is OK!')
 
+#print(netset)
+print('\n[*] Generating /29 subnets for every network...')
+for addr in ipaddress.IPv4Network(netset):
+	list(ipaddress.ip_network(addr).subnet(prefixlen_diff=5))	
+	
+
 #print('\n[*] Sorting file...')
 #listips.sort()
-#
-#print(listips)
-print(netset)
 
 
