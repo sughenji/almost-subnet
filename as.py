@@ -4,10 +4,29 @@ import sys
 import re
 import ipaddress
 
+# Define bits/prefix dictionary
+bitprefix_dict = { "32":0, "31":1, "30":2, "29":3, "28":4, "27":5, "26":6, "25":7 }
+
 if len(sys.argv) != 2:
 	print('\nUsage: ./as.py FILE\n')
+	print('Example: ./as.py networks.txt\n')
 	exit('Exiting...')
+
+userprefix = input('\nEnter desidered prefix (eg. 29): ')
+
+try:
+	val = int(userprefix)
+except ValueError:
+   	exit('\n[X] Invalid user input!\nExiting...\n')
+
+if int(userprefix) > 32 or int(userprefix) < 25:
+	exit('\n[X] Unsupported prefix!\n')
+
 file = open(sys.argv[1],'r')
+
+# Convert prefix in bit for later use with ipaddress module
+prefix = bitprefix_dict.get(userprefix)
+#print(prefix)
 
 # Initialize empty list
 listips = [] 
@@ -32,13 +51,6 @@ for line in file.readlines():
 		exit('\n[X] Please sanitize your file first.')
 print('\n[*] File is OK!')
 
-#print(netset)
-print('\n[*] Generating /29 subnets for every network...')
-for addr in ipaddress.IPv4Network(netset):
-	list(ipaddress.ip_network(addr).subnet(prefixlen_diff=5))	
-	
-
-#print('\n[*] Sorting file...')
-#listips.sort()
-
-
+print('\n[*] Generating /' +str(userprefix) + ' subnets...\n')
+for addr in netset:
+	print(list(ipaddress.ip_network(addr).subnets(prefixlen_diff=prefix)))
