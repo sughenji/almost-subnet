@@ -9,21 +9,24 @@ if len(sys.argv) != 2:
 	exit('Exiting...')
 file = open(sys.argv[1],'r')
 
+# Initialize empty list
+listips = []
+
+print('\n[*] Checking your file...')
 for line in file.readlines():
 	line = line.strip('\n')
 	try:
 		ipaddress.ip_address(line)
-		print('IP ' + str(line) + ' is a valid IPv4 address')
-		print('IP ' + str(line) + ' is in subnet: ' + str(ipaddress.ip_network('192.168.0.8/30')))
+		#print('IP ' + str(line) + ' is a valid IPv4 address')
+		listips.append(ipaddress.ip_address(line))
 	except ValueError:
-		print('IP ' + str(line) + ' is NOT a valid address')
+		print('\n[X] Error! Line with "' + str(line) + '" does NOT contain a valid IPv4 address.')
+		exit('\n[X] Please sanitize your file first.')
+print('\n[*] File is OK!')
 
-#x = [ "192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.4" ]
-#y = [ "192.168.0.1", "192.168.0.5" ]
+print('\n[*] Sorting file...')
+listips.sort()
 
-#result = re.findall([y], [x])
-#result = x + y
-#print(result)
+print(listips)
 
-list(ipaddress.ip_network('192.168.0.0/29').hosts())
-print(list)
+
