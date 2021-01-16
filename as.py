@@ -10,7 +10,9 @@ if len(sys.argv) != 2:
 file = open(sys.argv[1],'r')
 
 # Initialize empty list
-listips = []
+listips = [] 
+# Initialize empyt set
+netset = set()
 
 print('\n[*] Checking your file...')
 for line in file.readlines():
@@ -18,15 +20,21 @@ for line in file.readlines():
 	try:
 		ipaddress.ip_address(line)
 		#print('IP ' + str(line) + ' is a valid IPv4 address')
+		# Insert IP in list
 		listips.append(ipaddress.ip_address(line))
+		# Replace last octet with 0, converting in /24 network address
+		line = line[:line.rfind('.')+1] + '0'
+		# Add /24 networks to a set
+		netset.add(line) 
 	except ValueError:
 		print('\n[X] Error! Line with "' + str(line) + '" does NOT contain a valid IPv4 address.')
 		exit('\n[X] Please sanitize your file first.')
 print('\n[*] File is OK!')
 
-print('\n[*] Sorting file...')
-listips.sort()
-
-print(listips)
+#print('\n[*] Sorting file...')
+#listips.sort()
+#
+#print(listips)
+print(netset)
 
 
