@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
-import sys,ipaddress
+import sys
+import ipaddress
+import netaddr
 
 if len(sys.argv) != 2:
 	print('\nUsage: ./as.py FILE\n')
@@ -21,7 +23,7 @@ file = open(sys.argv[1],'r')
 
 # Initialize empty list
 listips = [] 
-subnetips = []
+#subnetips = []
 
 print('\n[*] Checking your file...')
 for line in file.readlines():
@@ -39,18 +41,31 @@ print('\n[*] File is OK!')
 netset = {}
 netset = set()
 
-# Populating networks list (as a set, to avoid duplicates)
+file = open(sys.argv[1],'r')
+
+# Populating set with networks list
 for item in listips:
 	IP = ipaddress.ip_interface(str(item) + '/' + str(prefix))
 	NET = IP.network
 	netset.add(NET)
 
 # Populating IP addresses in every subnet	
-for net in netset:
-	for x in ipaddress.IPv4Network(net):
-		#subnetips.append(x)
-		print(x)
-		
-	
-		
+#print('\n[*] Printing all IPv4 addresses in every subnet:\n')
+#for net in netset:
+#	for x in ipaddress.IPv4Network(net):
+#		#subnetips.append(x)
+#		print(x)
 
+# Print all net list
+#print('\n[*] Printing all networks:\n')
+#for net in netset:
+#	print(net)
+
+# The final cycle?
+for net in netset:
+	count = 0
+	for item in listips:
+		if item in netaddr.IPNetwork(str(net)):
+			count += 1
+	if count == 1:
+		print('\nThis network is almost free: ' + str(net) + '!\n)
