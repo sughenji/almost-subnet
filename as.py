@@ -6,24 +6,23 @@ import netaddr
 
 if len(sys.argv) != 2:
 	print('\nUsage: ./as.py FILE\n')
-	print('Example: ./as.py networks.txt\n')
+	print('FILE must contain IP addresses already assigned to your customers (one per line).\n')
 	exit('Exiting...')
 
-prefix = input('\nEnter desidered prefix (eg. 29): ')
+prefix = input('\nEnter desired prefix (eg. 29): ')
 
 try:
 	val = int(prefix)
 except ValueError:
    	exit('\n[X] Invalid user input!\nExiting...\n')
 
-if int(prefix) > 32 or int(prefix) < 25:
+if int(prefix) not in range(25,32):
 	exit('\n[X] Unsupported prefix!\n')
 
 file = open(sys.argv[1],'r')
 
 # Initialize empty list
 listips = [] 
-#subnetips = []
 
 print('\n[*] Checking your file...')
 for line in file.readlines():
@@ -49,23 +48,11 @@ for item in listips:
 	NET = IP.network
 	netset.add(NET)
 
-# Populating IP addresses in every subnet	
-#print('\n[*] Printing all IPv4 addresses in every subnet:\n')
-#for net in netset:
-#	for x in ipaddress.IPv4Network(net):
-#		#subnetips.append(x)
-#		print(x)
-
-# Print all net list
-#print('\n[*] Printing all networks:\n')
-#for net in netset:
-#	print(net)
-
-# The final cycle?
+# Harvesting "almost subnets"
 for net in netset:
 	count = 0
 	for item in listips:
 		if item in netaddr.IPNetwork(str(net)):
 			count += 1
 	if count == 1:
-		print('\nThis network is almost free: ' + str(net) + '!\n)
+		print('\nThis network is almost free: ' + str(net) + '!\n')
