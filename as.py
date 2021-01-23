@@ -22,8 +22,9 @@ file = open(sys.argv[1],'r')
 
 # Initialize empty lists
 listips = [] 
+almostsubnets = []
 
-print('\n[*] Checking your file...')
+print('\n...checking your file...')
 for line in file.readlines():
 	line = line.strip('\n')
 	try:
@@ -41,17 +42,33 @@ netset = set()
 
 file = open(sys.argv[1],'r')
 
-# Populating set with networks list
+# Populating set with relevant networks, according to provided list
 for item in listips:
 	IP = ipaddress.ip_interface(str(item) + '/' + str(prefix))
 	NET = IP.network
 	netset.add(NET)
 
-print('\nHarvesting "almost subnets"...\n')
+netset = sorted(netset)
+
+# Finding "interesting" subnets
+print('\n...harvesting "almost subnets", please wait...\n')
 for net in netset:
 	count = 0
 	for item in listips:
 		if ipaddress.ip_interface(item) in ipaddress.IPv4Network(net):
+			#print('Considering ip: ' + str(ipaddress.ip_interface(item)) + ' in subnet: ' + str(ipaddress.IPv4Network(net)) + '\n')
 			count += 1
 	if count == 1:
-		print('This network is almost free: ' + str(net) + '!\n')
+		print('...this network is almost free: ' + str(net) + '!\n')
+		almostsubnets.append(net)
+
+# Check if there is at least something...
+if not almostsubnets:
+	print('[X] Sorry, nothing found.')
+	exit()
+else:
+	print('...Finding "interesting" IP addresses...\n')
+	for netitem in almostsubnets:
+		for item in listips:
+			if ipaddress.ip_interface(item) in ipaddress.IPv4Network(netitem):
+				print('[*] You can recover subnet: ' + str(netitem) + ' by just deassigning IP: ' + str(item) + '!\n')
