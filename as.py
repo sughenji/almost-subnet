@@ -2,7 +2,6 @@
 
 import sys
 import ipaddress
-import netaddr
 
 if len(sys.argv) != 2:
 	print('\nUsage: ./as.py FILE\n')
@@ -16,7 +15,7 @@ try:
 except ValueError:
    	exit('\n[X] Invalid user input!\nExiting...\n')
 
-if int(prefix) not in range(25,32):
+if int(prefix) not in range(25,31):
 	exit('\n[X] Unsupported prefix!\n')
 
 file = open(sys.argv[1],'r')
@@ -52,7 +51,7 @@ print('\nHarvesting "almost subnets"...\n')
 for net in netset:
 	count = 0
 	for item in listips:
-		if item in netaddr.IPNetwork(str(net)):
+		if ipaddress.ip_interface(item) in ipaddress.IPv4Network(net):
 			count += 1
 	if count == 1:
 		print('This network is almost free: ' + str(net) + '!\n')
