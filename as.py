@@ -21,7 +21,7 @@ if int(prefix) not in range(25,32):
 
 file = open(sys.argv[1],'r')
 
-# Initialize empty list
+# Initialize empty lists
 listips = [] 
 
 print('\n[*] Checking your file...')
@@ -48,11 +48,11 @@ for item in listips:
 	NET = IP.network
 	netset.add(NET)
 
-# Harvesting "almost subnets"
+print('\nHarvesting "almost subnets"...\n')
 for net in netset:
 	count = 0
 	for item in listips:
 		if item in netaddr.IPNetwork(str(net)):
 			count += 1
 	if count == 1:
-		print('\nThis network is almost free: ' + str(net) + '!\n')
+		print('This network is almost free: ' + str(net) + '!\n')
