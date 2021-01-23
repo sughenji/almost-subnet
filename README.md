@@ -5,7 +5,8 @@ You just need to deassign that IP to recover a subnet with desired prefix.
 
 IPv4 only :-)
 
-```$ ./as.py FILE
+```
+$ ./as.py FILE
 
 Enter desired prefix (eg. 29): 29
 
